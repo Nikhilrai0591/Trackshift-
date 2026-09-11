@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.debugpy",
+    "dbaeumer.vscode-eslint",
+    "humao.rest-client",
+    "esbenp.prettier-vscode"
+  ]
+}

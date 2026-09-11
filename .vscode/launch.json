@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: FastAPI (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--port", "8000"],
+      "cwd": "${workspaceFolder}/backend",
+      "jinja": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Backend: validate_pipeline.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/validate_pipeline.py",
+      "cwd": "${workspaceFolder}/backend",
+      "env": { "TRACKSHIFT_API": "http://127.0.0.1:8000" },
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ],
+  "compounds": []
+}

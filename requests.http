@@ -1,0 +1,89 @@
+### TrackShift API — click "Send Request" above any block (needs the
+### "REST Client" extension by Humao). Backend must be running on :8000.
+
+@host = http://localhost:8000
+
+### Root / health check
+GET {{host}}/
+
+
+### ===================== Tyre Intelligence =====================
+
+### Meta — drivers & compounds
+GET {{host}}/tyre-intel/meta
+
+### List all stints (grab a stintId from here for the requests below)
+GET {{host}}/tyre-intel/stints
+
+### Overview KPIs for the default stint
+GET {{host}}/tyre-intel/overview
+
+### Hero: raw vs corrected degradation
+GET {{host}}/tyre-intel/degradation
+
+### All laps + validity for the default stint
+GET {{host}}/tyre-intel/laps
+
+### Degradation curves filtered by compound
+GET {{host}}/tyre-intel/degradation-curve?compound=medium
+
+### Compound comparison table
+GET {{host}}/tyre-intel/compare
+
+### Remaining tyre life projection
+GET {{host}}/tyre-intel/remaining-life
+
+### Lap forensics — swap driver/lapNumber for ones that exist in /tyre-intel/laps
+GET {{host}}/tyre-intel/lap-forensics?driver=REY&lapNumber=20
+
+### Strategy simulator
+POST {{host}}/tyre-intel/strategy
+Content-Type: application/json
+
+{
+  "stintId": "REY-medium-13",
+  "nextCompound": "hard",
+  "pitLossSeconds": 21.5,
+  "horizon": 10
+}
+
+### Ask the Race Engineer
+POST {{host}}/tyre-intel/ask
+Content-Type: application/json
+
+{
+  "question": "When should we pit?"
+}
+
+### Regenerate the mock session (new random seed)
+POST {{host}}/tyre-intel/session/regenerate
+
+### Home page demo bundle
+GET {{host}}/tyre-intel/demo
+
+
+### ===================== Race Ops (original, unchanged) =====================
+
+### Live race state
+GET {{host}}/race/state
+
+### Telemetry buffer
+GET {{host}}/telemetry
+
+### Pit strategy recommendation
+GET {{host}}/strategy
+
+### Competitors
+GET {{host}}/competitors
+
+### Monte Carlo strategy simulation
+POST {{host}}/strategy/simulate
+Content-Type: application/json
+
+{
+  "tyre": "medium",
+  "position": 2,
+  "weather": "dry",
+  "scProbability": 0.15,
+  "iterations": 500
+}
