@@ -8,6 +8,7 @@ const PRIMARY_TABS = [
   { to: '/lap-forensics', label: 'Lap Forensics' },
   { to: '/strategy-simulator', label: 'Strategy Simulator' },
   { to: '/race-engineer', label: 'Race Engineer' },
+  { to: '/decision-center', label: 'Decision Center' },
 ];
 
 const RACE_OPS_TABS = [
@@ -44,7 +45,7 @@ export default function Navbar({ apiOnline }) {
         </svg>
         <div className="brand-text">
           <div className="word">Track<span>Shift</span></div>
-          <div className="tag">TYRE INTELLIGENCE ENGINE</div>
+          <div className="tag">DECISION INTELLIGENCE ENGINE</div>
         </div>
       </a>
 

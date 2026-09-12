@@ -39,6 +39,10 @@ export const tyreIntelApi = {
   getRemainingLife: (stintId) => client.get('/tyre-intel/remaining-life', { params: stintId ? { stintId } : {} }).then(r => r.data),
   getLapForensics: (driver, lapNumber) => client.get('/tyre-intel/lap-forensics', { params: { driver, lapNumber } }).then(r => r.data),
   getDemo: () => client.get('/tyre-intel/demo').then(r => r.data),
+  getDecisionValue: (stintId, budget) => client.post('/tyre-intel/decision-value', { stintId, budget }).then(r => r.data),
+  getModelAssumptions: () => client.get('/tyre-intel/model-assumptions').then(r => r.data),
+  uploadSession: (file) => { const form = new FormData(); form.append('file', file); return client.post('/tyre-intel/session/upload', form, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 30000 }).then(r => r.data); },
+  useDemoSession: () => client.post('/tyre-intel/session/use-demo').then(r => r.data),
 
   runStrategy: (body) => client.post('/tyre-intel/strategy', body).then(r => r.data),
   ask: (question, stintId) => client.post('/tyre-intel/ask', { question, stintId }).then(r => r.data),

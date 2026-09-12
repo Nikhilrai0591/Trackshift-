@@ -9,13 +9,13 @@ export default function Home() {
   return (
     <section className="page">
       <div className="hero">
-        <div className="eyebrow" style={{ color: 'var(--cyan)' }}>TYRE DEGRADATION INTELLIGENCE</div>
+        <div className="eyebrow" style={{ color: 'var(--cyan)' }}>RACE DECISION INTELLIGENCE</div>
         <h1><span className="a1">Track</span><span className="a2">Shift</span></h1>
-        <div className="sub">Isolating true tyre wear <span className="r">from fuel, traffic &amp; track conditions.</span></div>
+        <div className="sub">Turning telemetry into <span className="r">uncertainty-aware, resource-efficient decisions.</span></div>
         <p className="desc">
           A slow lap doesn't automatically mean tyre degradation. TrackShift separates fuel burn, traffic,
-          track evolution and driver variation from the raw lap-time signal — so what's left over is an
-          honest, confidence-scored estimate of actual tyre wear.
+          track evolution and driver variation, then quantifies whether more analysis is worth its resource cost —
+          so engineers can focus effort where it can actually change the outcome.
         </p>
 
         {demo && !demo.insufficientData && (
@@ -33,8 +33,8 @@ export default function Home() {
         )}
 
         <div className="cta-row">
-          <button className="btn btn-primary" onClick={() => navigate('/tyre-intelligence')}>Open Tyre Intelligence →</button>
-          <button className="btn btn-ghost" onClick={() => navigate('/live')}>Launch Live Race</button>
+          <button className="btn btn-primary" onClick={() => navigate('/decision-center')}>Open Decision Center →</button>
+          <button className="btn btn-ghost" onClick={() => navigate('/tyre-intelligence')}>Inspect Tyre Model</button>
         </div>
       </div>
 
@@ -49,7 +49,7 @@ export default function Home() {
         </div>
         <div className="f">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2be3ff" strokeWidth="2"><path d="M4 19V13M10 19V9M16 19V5M22 19V11" /></svg>
-          <div><h4>Real-Time Strategy</h4><p>AI-weighted pit decisions every lap.</p></div>
+          <div><h4>Decision Value</h4><p>Know when another test is worth the resources.</p></div>
         </div>
         <div className="f">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8101f" strokeWidth="2"><circle cx="8" cy="8" r="3" /><circle cx="18" cy="16" r="3" /><path d="M2 21c0-3 2.5-5 6-5M13 21c0-3 2.5-5 6-5" /></svg>

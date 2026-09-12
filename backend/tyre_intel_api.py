@@ -7,6 +7,10 @@ shapes the response. No calculation logic lives here.
 """
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
+from fastapi import UploadFile, File
+
+from decision_value import calculate_decision_value, optimize_resource_budget, DEFAULT_ACTIONS
+from telemetry_io import normalize_csv
 from typing import Optional
 
 import mock_data
@@ -15,11 +19,13 @@ import race_engineer
 
 router = APIRouter(prefix="/tyre-intel", tags=["tyre-intelligence"])
 
+_uploaded_analysis = None
+_uploaded_laps = None
+
 
 # ---------------------------------------------------------------- shared helpers
 def _current_analysis():
-    raw = mock_data.get_session()
-    return ta.analyze_session(raw)
+    return _uploaded_analysis if _uploaded_analysis is not None else ta.analyze_session(mock_data.get_session())
 
 
 def _default_stint_id(stints):
@@ -87,6 +93,9 @@ def list_stints():
 
 @router.post("/session/regenerate")
 def regenerate_session(seed: Optional[int] = None):
+    global _uploaded_analysis, _uploaded_laps
+    _uploaded_analysis = None
+    _uploaded_laps = None
     mock_data.regenerate_session(seed)
     return {"status": "regenerated"}
 
@@ -318,6 +327,87 @@ def strategy(body: StrategyRequest):
         "pitWindow": pit,
     }
 
+
+
+# ---------------------------------------------------------------- decision intelligence
+class DecisionValueRequest(BaseModel):
+    stintId: str
+    budget: float = Field(default=100.0, ge=0, le=10000)
+
+
+@router.post("/decision-value")
+def decision_value(body: DecisionValueRequest):
+    stints = _current_analysis()
+    stint = _get_stint_or_404(stints, body.stintId)
+    deg = stint["degradationModel"]
+    if deg.get("insufficientData"):
+        return {"insufficientData": True, "message": deg["message"]}
+    compare_rows = ta.compare_compounds(stints)
+    current = stint["compound"]
+    next_model, next_compound = _pick_next_compound_model(stints, current)
+    candidates = [
+        {"key": "stay", "delay": 0, "pitLoss": 0},
+        {"key": "pit_now", "delay": 0, "pitLoss": ta.PIT_LOSS_SEC},
+        {"key": "pit_plus_3", "delay": 3, "pitLoss": ta.PIT_LOSS_SEC},
+    ]
+    if next_model:
+        for c in candidates:
+            c["pitLoss"] = 0 if c["key"] == "stay" else ta.PIT_LOSS_SEC
+    result = calculate_decision_value(deg, stint["currentAge"], candidates, budget=body.budget)
+    result["stintId"] = body.stintId
+    result["compound"] = stint["compoundLabel"]
+    result["nextCompound"] = next_compound
+    result["modelEvidence"] = {"validLapCount": deg.get("validLapCount"), "totalLapCount": deg.get("totalLapCount"), "degradationRate": deg.get("degradationRate"), "confidence": deg.get("confidence")}
+    result["resourcePrinciple"] = "Resource Credits are normalized demonstration units, not claimed F1 financial costs."
+    return result
+
+
+class ResourcePlanRequest(BaseModel):
+    budget: float = Field(default=100.0, ge=0, le=10000)
+    actions: list[dict] = []
+
+
+@router.post("/resource-plan")
+def resource_plan(body: ResourcePlanRequest):
+    actions = body.actions or DEFAULT_ACTIONS
+    return optimize_resource_budget(actions, body.budget)
+
+
+@router.get("/model-assumptions")
+def model_assumptions():
+    return {
+        "mode": "simulation",
+        "source": "synthetic demo data unless an uploaded session is active",
+        "assumptions": [
+            {"name": "Fuel coefficient", "value": ta.FUEL_COEF_SEC_PER_KG, "unit": "s/kg", "type": "estimated"},
+            {"name": "Pit loss", "value": ta.PIT_LOSS_SEC, "unit": "s", "type": "configurable estimate"},
+            {"name": "Traffic clear threshold", "value": ta.TRAFFIC_CLEAR_THRESHOLD, "unit": "score / 100", "type": "heuristic"},
+            {"name": "Critical degradation", "value": ta.CRITICAL_DEGRADATION_THRESHOLD_SEC, "unit": "s/lap", "type": "configurable threshold"},
+        ],
+        "note": "These values must be calibrated with team-specific historical data before professional use."
+    }
+
+
+@router.post("/session/upload")
+async def upload_session(file: UploadFile = File(...)):
+    global _uploaded_analysis, _uploaded_laps
+    content = await file.read()
+    try:
+        laps = normalize_csv(content.decode("utf-8-sig"))
+        analysis = ta.analyze_session(laps)
+    except (UnicodeDecodeError, ValueError, KeyError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    _uploaded_laps = laps
+    _uploaded_analysis = analysis
+    return {"status": "uploaded", "filename": file.filename, "lapCount": len(laps), "stintCount": len(analysis), "stints": list(analysis.keys()), "mode": "uploaded"}
+
+
+@router.post("/session/use-demo")
+def use_demo_session():
+    global _uploaded_analysis, _uploaded_laps
+    _uploaded_analysis = None
+    _uploaded_laps = None
+    return {"status": "demo", "mode": "simulation"}
 
 # ---------------------------------------------------------------- AI race engineer
 class AskRequest(BaseModel):

@@ -168,3 +168,11 @@ See `IMPLEMENTATION.md` for the full breakdown of what changed, what's real
 vs. estimated, and a 60-second judge pitch. See `DEPLOYMENT.md` for the full
 step-by-step deploy guide (updating your existing Render/Vercel deployment,
 setting up fresh, or a 2-minute ngrok backup for demo day).
+
+## Decision Intelligence upgrade
+
+The current build includes a **Decision Center** at `/decision-center`. It adds a resource-aware layer to the tyre model: TrackShift estimates decision sensitivity and whether additional analysis is worth its normalized **Resource Credit** cost. It also supports CSV session uploads at `POST /tyre-intel/session/upload`.
+
+Resource Credits are intentionally configurable demonstration units, not claims about real F1 costs. Before professional use, calibrate assumptions with team-specific historical data.
+
+See `IMPLEMENTATION_ROADMAP.md` for the staged product plan and `sample_telemetry.csv` for an example upload format.

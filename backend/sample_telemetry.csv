@@ -1,0 +1,9 @@
+lapNumber,tyreAge,lapTime,compound,stintId,driver,driverName,car,fuelLoad,trafficScore,sector1,sector2,sector3,flagStatus,pitLap,trackTemperature,airTemperature
+1,1,93.100,medium,DEMO-medium-1,TS1,Demo Driver,1,105,8,28.861,35.378,28.861,green,true,38,24
+2,2,92.850,medium,DEMO-medium-1,TS1,Demo Driver,1,103.3,5,28.784,35.283,28.783,green,false,38.4,24.2
+3,3,92.940,medium,DEMO-medium-1,TS1,Demo Driver,1,101.7,12,28.811,35.317,28.812,green,false,38.8,24.3
+4,4,93.050,medium,DEMO-medium-1,TS1,Demo Driver,1,100.1,6,28.846,35.339,28.865,green,false,39.1,24.4
+5,5,93.180,medium,DEMO-medium-1,TS1,Demo Driver,1,98.5,7,28.880,35.410,28.890,green,false,39.5,24.5
+6,6,93.280,medium,DEMO-medium-1,TS1,Demo Driver,1,96.8,9,28.907,35.465,28.908,green,false,39.9,24.6
+7,7,93.400,medium,DEMO-medium-1,TS1,Demo Driver,1,95.2,10,28.954,35.506,28.940,green,false,40.2,24.7
+8,8,93.520,medium,DEMO-medium-1,TS1,Demo Driver,1,93.6,11,28.992,35.558,28.970,green,false,40.6,24.8

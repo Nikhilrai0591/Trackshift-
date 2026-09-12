@@ -15,6 +15,7 @@ import Competitors from './pages/Competitors';
 import Tyres from './pages/Tyres';
 import Simulator from './pages/Simulator';
 import About from './pages/About';
+import DecisionCenter from './pages/DecisionCenter';
 import api from './api';
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/lap-forensics" element={<LapForensics />} />
             <Route path="/strategy-simulator" element={<StrategySimulator />} />
             <Route path="/race-engineer" element={<RaceEngineer />} />
+            <Route path="/decision-center" element={<DecisionCenter />} />
 
             {/* Race Ops — original race-strategy simulation, unchanged */}
             <Route path="/live" element={<LiveRace />} />
